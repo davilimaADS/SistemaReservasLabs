@@ -6,6 +6,7 @@ using SistemaReservasLabs.Data;
 using SistemaReservasLabs.Services.Token;
 using SistemaReservasLabs.Services.Usuario;
 using SistemaReservasLabs.Services.Usuario.Login;
+using SistemaReservasLabs.Services.Usuario.Perfil;
 using SistemaReservasLabs.Services.Usuario.Registrar;
 using SistemaReservasLabs.Settings;
 using System.Text;
@@ -61,6 +62,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IPerfilService, PerfilService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
@@ -83,6 +85,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
