@@ -12,28 +12,19 @@ using SistemaReservasLabs.Services.Usuario.Login;
 var builder = WebApplication.CreateBuilder(args);
 
 
-var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
-builder.Services.Configure<JwtSettings>(jwtSettingsSection);
-
-var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
-var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
-
-builder.Services.AddAuthentication(options =>
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddAuthentication("JwtSettings").AddJwtBearer("Bearer", options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
+    var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings.Issuer,
-        ValidAudience = jwtSettings.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        ValidIssuer = jwtSettings?.Issuer,
+        ValidAudience = jwtSettings?.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.Key ?? ""))
     };
 });
 
