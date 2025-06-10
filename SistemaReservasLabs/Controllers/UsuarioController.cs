@@ -46,7 +46,7 @@ public class UsuarioController : ControllerBase
         try
         {
             var response = await _loginUsuarioService.LoginAsync(loginDto);
-            return Ok(response); // Deve retornar DTO com Token e dados básicos do usuário
+            return Ok(response); 
         }
         catch (UnauthorizedAccessException ex)
         {
