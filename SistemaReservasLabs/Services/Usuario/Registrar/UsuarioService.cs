@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SistemaReservasLabs.Data;
 using SistemaReservasLabs.DTOs.Usuario;
-using SistemaReservasLabs.Models.Entities;
 using SistemaReservasLabs.Models.Enums;
+using SistemaReservasLabs.Services.Usuario.Registrar;
 
-namespace SistemaReservasLabs.Services;
+namespace SistemaReservasLabs.Services.Usuario;
 
 public class UsuarioService : IUsuarioService
 {
@@ -35,7 +35,7 @@ public class UsuarioService : IUsuarioService
             }
         }
         var senhaHash = BCrypt.Net.BCrypt.HashPassword(registroUsuarioDTO.Senha);
-        var usuario = new Usuario
+        var usuario = new SistemaReservasLabs.Models.Entities.Usuario 
         {
             Nome = registroUsuarioDTO.Nome,
             Matricula = registroUsuarioDTO.Matricula,

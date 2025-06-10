@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using SistemaReservasLabs.DTOs.Usuario;
-using SistemaReservasLabs.Services;
+using SistemaReservasLabs.Services.Usuario.Login;
+using SistemaReservasLabs.Services.Usuario.Registrar;
 
 namespace SistemaReservasLabs.Controllers;
 [Route("api/[controller]")]
@@ -9,9 +10,11 @@ namespace SistemaReservasLabs.Controllers;
 public class UsuarioController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
-    public UsuarioController(IUsuarioService usuarioService)
+    private readonly ILoginService _loginUsuarioService;
+    public UsuarioController(IUsuarioService usuarioService, ILoginService loginUsuarioService)
     {
         _usuarioService = usuarioService;
+        _loginUsuarioService = loginUsuarioService;
     }
     [HttpPost("registrar")]
     public async Task<IActionResult> RegistrarUsuario([FromBody] RegistroUsuarioDTO registroUsuarioDTO)
@@ -32,6 +35,26 @@ public class UsuarioController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return Conflict(ex.Message);
+        }
+    }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            var response = await _loginUsuarioService.LoginAsync(loginDto);
+            return Ok(response); // Deve retornar DTO com Token e dados básicos do usuário
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro interno: {ex.Message}");
         }
     }
 }
