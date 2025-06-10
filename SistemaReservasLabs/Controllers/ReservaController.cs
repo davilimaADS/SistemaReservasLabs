@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaReservasLabs.DTOs.Reserva;
+using SistemaReservasLabs.Models.Enums;
 using SistemaReservasLabs.Services.Reserva;
 using System.Security.Claims;
 
@@ -51,6 +52,47 @@ namespace SistemaReservasLabs.Controllers
         {
             var reserva = await _service.ObterPorIdAsync(id);
             return reserva is null ? NotFound() : Ok(reserva);
+        }
+        [HttpPut("{id}/aprovar")]
+        [Authorize(Roles = "CoordenadorCurso,CoordenadorLaboratorio,Reitoria")] // só quem pode aprovar
+        public async Task<IActionResult> Aprovar(int id, [FromQuery] Funcao aprovador)
+        {
+            var claimFuncao = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!Enum.TryParse<Funcao>(claimFuncao, out var funcao))
+                return Forbid("Função do usuário não reconhecida.");
+
+            try
+            {
+                var sucesso = await _service.AprovarAsync(id, funcao);
+                return sucesso ? Ok("Reserva aprovada com sucesso.") : NotFound("Reserva não encontrada.");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}/rejeitar")]
+        [Authorize(Roles = "CoordenadorCurso,CoordenadorLaboratorio,Reitoria")] // quem pode rejeitar
+        public async Task<IActionResult> Rejeitar(int id)
+        {
+            try
+            {
+                var sucesso = await _service.RejeitarAsync(id);
+                if (!sucesso)
+                    return NotFound("Reserva não encontrada.");
+
+                return Ok("Reserva rejeitada com sucesso.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

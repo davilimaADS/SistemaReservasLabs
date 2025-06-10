@@ -14,9 +14,40 @@ namespace SistemaReservasLabs.Services.Reserva
             _context = context;
         }
 
-        public Task<bool> AprovarAsync(int id, Funcao aprovador)
+        public async Task<bool> AprovarAsync(int id, Funcao aprovador)
         {
-            throw new NotImplementedException();
+            var reserva = await _context.Reservas.FindAsync(id);
+            if (reserva == null) return false;
+
+            switch (reserva.Status)
+            {
+                case StatusReserva.Pendente:
+                    if (aprovador != Funcao.CoordenadorLaboratorio)
+                        throw new UnauthorizedAccessException("Somente o Coordenador de Laboratório pode aprovar essa etapa.");
+                    reserva.Status = StatusReserva.AprovadoCoordenadorLab;
+                    break;
+
+                case StatusReserva.AprovadoCoordenadorLab:
+                    if (aprovador != Funcao.CoordenadorCurso)
+                        throw new UnauthorizedAccessException("Somente o Coordenador de Curso pode aprovar essa etapa.");
+                    reserva.Status = StatusReserva.AprovadoCoordenadorCurso;
+                    break;
+
+                case StatusReserva.AprovadoCoordenadorCurso:
+                    if (aprovador != Funcao.Reitoria)
+                        throw new UnauthorizedAccessException("Somente a Reitoria pode aprovar essa etapa.");
+                    reserva.Status = StatusReserva.AprovadoReitoria;
+                    break;
+
+                case StatusReserva.AprovadoReitoria:
+                    throw new InvalidOperationException("A reserva já foi totalmente aprovada.");
+
+                default:
+                    throw new InvalidOperationException("Não é possível aprovar uma reserva rejeitada.");
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<ReservaDTO> CriarAsync(int professorId, CriarReservaDTO dto)
@@ -93,9 +124,17 @@ namespace SistemaReservasLabs.Services.Reserva
             };
         }
 
-        public Task<bool> RejeitarAsync(int id)
+        public async Task<bool> RejeitarAsync(int id)
         {
-            throw new NotImplementedException();
+            var reserva = await _context.Reservas.FindAsync(id);
+            if (reserva == null) return false;
+
+            if (reserva.Status == StatusReserva.AprovadoReitoria || reserva.Status == StatusReserva.Rejeitado)
+                throw new InvalidOperationException("Essa reserva não pode ser rejeitada.");
+
+            reserva.Status = StatusReserva.Rejeitado;
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
