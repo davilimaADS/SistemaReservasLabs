@@ -17,7 +17,7 @@ namespace SistemaReservasLabs.Controllers
         }
 
         [Authorize(Roles = "CoordenadorLaboratorio,Reitoria")]
-        [HttpPost]
+        [HttpPost("criar")]
         public async Task<IActionResult> Criar([FromBody] CriarLaboratorioDTO dto)
         {
             try
@@ -31,14 +31,14 @@ namespace SistemaReservasLabs.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("listar")]
         public async Task<IActionResult> Listar()
         {
             var labs = await _service.ListarTodosAsync();
             return Ok(labs);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
             var lab = await _service.ObterPorIdAsync(id);
@@ -46,7 +46,7 @@ namespace SistemaReservasLabs.Controllers
         }
 
         [Authorize(Roles = "CoordenadorLaboratorio,Reitoria")]
-        [HttpPut("{id}")]
+        [HttpPut("atualizar/{id}")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] CriarLaboratorioDTO dto)
         {
             var atualizado = await _service.AtualizarAsync(id, dto);
@@ -54,7 +54,7 @@ namespace SistemaReservasLabs.Controllers
         }
 
         [Authorize(Roles = "CoordenadorLaboratorio,Reitoria")]
-        [HttpDelete("{id}")]
+        [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
             var deletado = await _service.DeletarAsync(id);

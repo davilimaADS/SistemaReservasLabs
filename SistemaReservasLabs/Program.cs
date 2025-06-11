@@ -6,6 +6,7 @@ using SistemaReservasLabs.Data;
 using SistemaReservasLabs.Services.Laboratorio;
 using SistemaReservasLabs.Services.Reserva;
 using SistemaReservasLabs.Services.Token;
+using SistemaReservasLabs.Services.Turma;
 using SistemaReservasLabs.Services.Usuario;
 using SistemaReservasLabs.Services.Usuario.Login;
 using SistemaReservasLabs.Services.Usuario.Perfil;
@@ -67,12 +68,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IPerfilService, PerfilService>();
-
 builder.Services.AddScoped<ILaboratorioService, LaboratorioService>();
-
 builder.Services.AddScoped<IReservaService, ReservaService>();
-
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITurmaService, TurmaService>();
 
 
 

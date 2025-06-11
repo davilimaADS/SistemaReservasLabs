@@ -24,7 +24,7 @@ namespace SistemaReservasLabs.Controllers
             return int.TryParse(claim?.Value, out var id) ? id : 0;
         }
 
-        [HttpPost]
+        [HttpPost("criarReserva")]
         [Authorize(Roles = "Professor,CoordenadorCurso,CoordenadorLaboratorio,Reitoria")]
         public async Task<IActionResult> Criar([FromBody] CriarReservaDTO dto)
         {
@@ -40,14 +40,14 @@ namespace SistemaReservasLabs.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("listarReservas")]
         public async Task<IActionResult> Listar()
         {
             var reservas = await _service.ListarAsync();
             return Ok(reservas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
             var reserva = await _service.ObterPorIdAsync(id);
