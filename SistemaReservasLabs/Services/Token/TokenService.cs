@@ -21,6 +21,7 @@ namespace SistemaReservasLabs.Services.Token
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Nome),
                 new Claim(ClaimTypes.Role, usuario.Funcao.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())

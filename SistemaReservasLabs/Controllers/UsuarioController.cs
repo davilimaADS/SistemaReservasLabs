@@ -1,8 +1,11 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaReservasLabs.DTOs.Usuario;
 using SistemaReservasLabs.Services.Usuario.Login;
+using SistemaReservasLabs.Services.Usuario.Perfil;
 using SistemaReservasLabs.Services.Usuario.Registrar;
+using System.Security.Claims;
 
 namespace SistemaReservasLabs.Controllers;
 [Route("api/[controller]")]
@@ -11,10 +14,12 @@ public class UsuarioController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
     private readonly ILoginService _loginUsuarioService;
-    public UsuarioController(IUsuarioService usuarioService, ILoginService loginUsuarioService)
+    private readonly IPerfilService _perfilService; 
+    public UsuarioController(IUsuarioService usuarioService, ILoginService loginUsuarioService, IPerfilService perfilService)
     {
         _usuarioService = usuarioService;
         _loginUsuarioService = loginUsuarioService;
+        _perfilService = perfilService;
     }
     [HttpPost("registrar")]
     public async Task<IActionResult> RegistrarUsuario([FromBody] RegistroUsuarioDTO registroUsuarioDTO)
@@ -56,5 +61,13 @@ public class UsuarioController : ControllerBase
         {
             return StatusCode(500, $"Erro interno: {ex.Message}");
         }
+    }
+    [Authorize]
+    [HttpGet("perfil")]
+    public async Task<IActionResult> ObterPerfil()
+    {
+        var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var perfil = await _perfilService.ObterPerfilAsync(usuarioId);
+        return Ok(perfil);
     }
 }
