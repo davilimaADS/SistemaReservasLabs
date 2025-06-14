@@ -1,4 +1,6 @@
-﻿namespace SistemaReservasLabs.DTOs.Usuario;
+﻿using SistemaReservasLabs.Models.Enums;
+
+namespace SistemaReservasLabs.DTOs.Usuario;
 
 public class UsuarioDTO
 {
@@ -7,4 +9,5 @@ public class UsuarioDTO
     public string Matricula { get; set; } = string.Empty;
     public string EmailInstitucional { get; set; } = string.Empty;
     public int? CursoId { get; set; }
+    public Funcao Funcao { get; set; }
 }

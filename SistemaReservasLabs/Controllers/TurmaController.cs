@@ -7,7 +7,7 @@ using SistemaReservasLabs.Services.Turma;
 namespace SistemaReservasLabs.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "CoordenadorCurso, CoordenadorLaboratorio")]
+[Authorize(Roles = "CoordenadorCurso")]
 public class TurmaController : ControllerBase
 {
     private readonly ITurmaService _turmaService;
