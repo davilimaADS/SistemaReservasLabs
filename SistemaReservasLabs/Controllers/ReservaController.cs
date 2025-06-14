@@ -38,6 +38,10 @@ namespace SistemaReservasLabs.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpGet("listarReservas")]

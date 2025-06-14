@@ -7,7 +7,7 @@ public class Laboratorio
     public int Capacidade { get; set; }
     public string Localizacao { get; set; } = string.Empty;
     public string Area { get; set; } = string.Empty;
-
+    public bool EmManutencao { get; set; } = false;
     public int CoordenadorLaboratorioId { get; set; }
     public Usuario? CoordenadorLaboratorio { get; set; }
 

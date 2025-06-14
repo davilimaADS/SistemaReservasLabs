@@ -28,7 +28,8 @@ namespace SistemaReservasLabs.Services.Usuario.Perfil
                 Nome = usuario.Nome,
                 Matricula = usuario.Matricula,
                 EmailInstitucional = usuario.EmailInstitucional,
-                CursoId = usuario.CursoId
+                CursoId = usuario.CursoId,
+                Funcao = usuario.Funcao
             };
         }
     }

@@ -7,6 +7,7 @@
         public int Capacidade { get; set; }
         public string Localizacao { get; set; } = string.Empty;
         public string Area { get; set; } = string.Empty;
+        public bool EmManutencao { get; set; }
         public int CoordenadorId { get; set; }
     }
 }
