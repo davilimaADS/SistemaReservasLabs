@@ -20,6 +20,7 @@ namespace SistemaReservasLabs.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<HistoricoReserva>().HasNoKey().ToView("View_HistoricoReservas");
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
