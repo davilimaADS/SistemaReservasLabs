@@ -57,6 +57,14 @@ namespace SistemaReservasLabs.Services.Reserva
                 r.LaboratorioId == dto.LaboratorioId &&
                 r.DataHoraInicio < dto.DataHoraFim &&
                 r.DataHoraFim > dto.DataHoraInicio);
+            var lab = await _context.Laboratorios.FindAsync(dto.LaboratorioId);
+
+            if (lab == null)
+                throw new ArgumentException("Laboratório inexistente.");
+            if (lab.EmManutencao)
+            {
+                throw new ArgumentException("Não é possível reservar um laboratório que está em manutenção.");
+            }
 
             if (conflito)
                 throw new ArgumentException("O laboratório já está reservado nesse horário.");

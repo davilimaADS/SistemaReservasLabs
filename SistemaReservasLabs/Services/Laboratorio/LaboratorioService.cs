@@ -55,6 +55,7 @@ namespace SistemaReservasLabs.Services.Laboratorio
                     Capacidade = l.Capacidade,
                     Localizacao = l.Localizacao,
                     Area = l.Area,
+                    EmManutencao = l.EmManutencao,
                     CoordenadorId = l.CoordenadorLaboratorioId
                 })
                 .ToListAsync();
@@ -72,6 +73,7 @@ namespace SistemaReservasLabs.Services.Laboratorio
                 Capacidade = lab.Capacidade,
                 Localizacao = lab.Localizacao,
                 Area = lab.Area,
+                EmManutencao = lab.EmManutencao,
                 CoordenadorId = lab.CoordenadorLaboratorioId
             };
         }
@@ -100,5 +102,15 @@ namespace SistemaReservasLabs.Services.Laboratorio
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task AtualizarStatusManutencaoAsync(int laboratorioId, bool emManutencao)
+        {
+            var laboratorio = await _context.Laboratorios.FindAsync(laboratorioId);
+            if (laboratorio == null)
+                throw new KeyNotFoundException("Laboratório não encontrado.");
+
+            laboratorio.EmManutencao = emManutencao;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

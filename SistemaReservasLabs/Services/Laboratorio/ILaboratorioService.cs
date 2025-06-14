@@ -9,5 +9,7 @@ namespace SistemaReservasLabs.Services.Laboratorio
         Task<LaboratorioDTO?> ObterPorIdAsync(int id);
         Task<bool> AtualizarAsync(int id, CriarLaboratorioDTO dto);
         Task<bool> DeletarAsync(int id);
+        Task AtualizarStatusManutencaoAsync(int laboratorioId, bool emManutencao);
+
     }
 }

@@ -60,5 +60,20 @@ namespace SistemaReservasLabs.Controllers
             var deletado = await _service.DeletarAsync(id);
             return deletado ? NoContent() : NotFound();
         }
+        [HttpPut("{id}/manutencao")]
+        [Authorize(Roles = "Tecnico")]
+        public async Task<IActionResult> AtualizarStatusManutencao(int id, [FromBody] AtualizarStatusManutencaoDTO dto)
+        {
+            try
+            {
+                await _service.AtualizarStatusManutencaoAsync(id, dto.EmManutencao);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
     }
 }
