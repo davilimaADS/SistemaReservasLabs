@@ -13,19 +13,37 @@ public class UsuarioService : IUsuarioService
     {
         _context = context;
     }
+    private string GerarMatriculaUnica()
+    {
+        const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new Random();
+        string matricula;
+
+        do
+        {
+            matricula = new string(Enumerable.Repeat(caracteres, 8)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        while (_context.Usuarios.Any(u => u.Matricula == matricula));
+
+        return matricula;
+    }
     public async Task<UsuarioDTO> RegistrarUsuarioAsync(RegistroUsuarioDTO registroUsuarioDTO)
     {
-        if ((registroUsuarioDTO.Funcao == Funcao.Professor || registroUsuarioDTO.Funcao == Funcao.CoordenadorCurso) && registroUsuarioDTO.CursoId == null)
+        if ((registroUsuarioDTO.Funcao == Funcao.Professor || registroUsuarioDTO.Funcao == Funcao.CoordenadorCurso)
+            && registroUsuarioDTO.CursoId == null)
         {
-            throw new ArgumentException("O curso é obrigatório para professores e coordenadores de curso.");
+            throw new ArgumentException("O curso é obrigatório para professores e coordenadores de curso.");
         }
+
         var usuarioExiste = await _context.Usuarios.AnyAsync(u =>
-        u.Matricula == registroUsuarioDTO.Matricula || u.EmailInstitucional == registroUsuarioDTO.EmailInstitucional);
+            u.EmailInstitucional == registroUsuarioDTO.EmailInstitucional);
 
         if (usuarioExiste)
         {
-            throw new ArgumentException("Já existe um usuário com essa matrícula ou e-mail institucional.");
+            throw new ArgumentException("Já existe um usuário com esse e-mail institucional.");
         }
+
         if (registroUsuarioDTO.CursoId.HasValue)
         {
             var cursoExiste = await _context.Cursos.AnyAsync(c => c.Id == registroUsuarioDTO.CursoId);
@@ -34,19 +52,25 @@ public class UsuarioService : IUsuarioService
                 throw new ArgumentException("O curso informado não existe.");
             }
         }
+
         var senhaHash = BCrypt.Net.BCrypt.HashPassword(registroUsuarioDTO.Senha);
-        var usuario = new SistemaReservasLabs.Models.Entities.Usuario 
+
+        var matricula = GerarMatriculaUnica();
+
+        var usuario = new Models.Entities.Usuario
         {
             Nome = registroUsuarioDTO.Nome,
-            Matricula = registroUsuarioDTO.Matricula,
+            Matricula = matricula,
             EmailInstitucional = registroUsuarioDTO.EmailInstitucional,
             SenhaHash = senhaHash,
             Funcao = registroUsuarioDTO.Funcao,
             CursoId = registroUsuarioDTO.CursoId
         };
+
         _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
-        return new UsuarioDTO()
+
+        return new UsuarioDTO
         {
             Id = usuario.Id,
             Nome = usuario.Nome,
@@ -55,4 +79,5 @@ public class UsuarioService : IUsuarioService
             CursoId = usuario.CursoId
         };
     }
+
 }
