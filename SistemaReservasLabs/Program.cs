@@ -73,6 +73,7 @@ builder.Services.AddScoped<IReservaService, ReservaService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITurmaService, TurmaService>();
 
+builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
@@ -80,7 +81,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         new MySqlServerVersion(new Version(8, 0, 0))
     )
 );
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextJS", policy =>
