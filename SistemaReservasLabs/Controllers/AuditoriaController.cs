@@ -18,7 +18,7 @@ public class AuditoriaController : ControllerBase
     }
 
     [HttpGet("historico")]
-    [Authorize(Roles = "Auditor")]
+    [Authorize]
     public async Task<IActionResult> ObterHistoricoReservas()
     {
         try

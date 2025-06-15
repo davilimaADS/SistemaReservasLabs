@@ -16,7 +16,7 @@ namespace SistemaReservasLabs.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "CoordenadorLaboratorio,Reitoria")]
+        [Authorize(Roles = "CoordenadorLaboratorio, Reitoria")]
         [HttpPost("criar")]
         public async Task<IActionResult> Criar([FromBody] CriarLaboratorioDTO dto)
         {
@@ -30,14 +30,14 @@ namespace SistemaReservasLabs.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [Authorize]
         [HttpGet("listar")]
         public async Task<IActionResult> Listar()
         {
             var labs = await _service.ListarTodosAsync();
             return Ok(labs);
         }
-
+        [Authorize]
         [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
@@ -45,7 +45,7 @@ namespace SistemaReservasLabs.Controllers
             return lab == null ? NotFound() : Ok(lab);
         }
 
-        [Authorize(Roles = "CoordenadorLaboratorio,Reitoria")]
+        [Authorize(Roles = "CoordenadorLaboratorio, Reitoria")]
         [HttpPut("atualizar/{id}")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] CriarLaboratorioDTO dto)
         {
@@ -53,7 +53,7 @@ namespace SistemaReservasLabs.Controllers
             return atualizado ? NoContent() : NotFound();
         }
 
-        [Authorize(Roles = "CoordenadorLaboratorio,Reitoria")]
+        [Authorize(Roles = "CoordenadorLaboratorio, Reitoria")]
         [HttpDelete("deletar/{id}")]
         public async Task<IActionResult> Deletar(int id)
         {

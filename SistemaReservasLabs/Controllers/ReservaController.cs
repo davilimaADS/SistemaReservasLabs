@@ -25,7 +25,7 @@ namespace SistemaReservasLabs.Controllers
         }
 
         [HttpPost("criarReserva")]
-        [Authorize(Roles = "Professor,CoordenadorCurso,CoordenadorLaboratorio,Reitoria")]
+        [Authorize(Roles = "Professor, CoordenadorCurso, CoordenadorLaboratorio, Reitoria")]
         public async Task<IActionResult> Criar([FromBody] CriarReservaDTO dto)
         {
             try
@@ -43,14 +43,14 @@ namespace SistemaReservasLabs.Controllers
                 return Conflict(ex.Message);
             }
         }
-
+        [Authorize]
         [HttpGet("listarReservas")]
         public async Task<IActionResult> Listar()
         {
             var reservas = await _service.ListarAsync();
             return Ok(reservas);
         }
-
+        [Authorize]
         [HttpGet("obterPorId/{id}")]
         public async Task<IActionResult> ObterPorId(int id)
         {
@@ -58,7 +58,7 @@ namespace SistemaReservasLabs.Controllers
             return reserva is null ? NotFound() : Ok(reserva);
         }
         [HttpPut("{id}/aprovar")]
-        [Authorize(Roles = "CoordenadorCurso,CoordenadorLaboratorio,Reitoria")] // só quem pode aprovar
+        [Authorize(Roles = "CoordenadorCurso,CoordenadorLaboratorio,Reitoria")]
         public async Task<IActionResult> Aprovar(int id, [FromQuery] Funcao aprovador)
         {
             var claimFuncao = User.FindFirst(ClaimTypes.Role)?.Value;
@@ -82,7 +82,7 @@ namespace SistemaReservasLabs.Controllers
         }
 
         [HttpPut("{id}/rejeitar")]
-        [Authorize(Roles = "CoordenadorCurso,CoordenadorLaboratorio,Reitoria")] // quem pode rejeitar
+        [Authorize(Roles = "CoordenadorCurso,CoordenadorLaboratorio,Reitoria")]
         public async Task<IActionResult> Rejeitar(int id)
         {
             try

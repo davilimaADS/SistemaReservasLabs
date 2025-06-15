@@ -7,7 +7,6 @@ using SistemaReservasLabs.Services.Turma;
 namespace SistemaReservasLabs.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "CoordenadorCurso")]
 public class TurmaController : ControllerBase
 {
     private readonly ITurmaService _turmaService;
@@ -15,7 +14,7 @@ public class TurmaController : ControllerBase
     {
         _turmaService = service;
     }
-
+    [Authorize(Roles = "CoordenadorCurso, Reitoria")]
     [HttpPost("criar")]
     public async Task<ActionResult<TurmaDTO>> CriarTurma([FromBody] CriarTurmaDTO dto)
     {
@@ -29,7 +28,7 @@ public class TurmaController : ControllerBase
             return BadRequest($"Erro ao criar turma: {ex.Message}");
         }
     }
-
+    [Authorize(Roles = "CoordenadorCurso, Reitoria")]
     [HttpPut("atualizar/{id}")]
     public async Task<ActionResult<TurmaDTO>> Atualizar(int id, [FromBody] AtualizarTurmaDTO dto)
     {
@@ -46,7 +45,7 @@ public class TurmaController : ControllerBase
             return BadRequest($"Erro ao atualizar turma: {ex.Message}");
         }
     }
-
+    [Authorize]
     [HttpGet("obterPorId/{id}")]
     public async Task<ActionResult<TurmaDTO>> ObterPorId(int id)
     {
@@ -63,7 +62,7 @@ public class TurmaController : ControllerBase
             return BadRequest($"Erro ao obter turma: {ex.Message}");
         }
     }
-
+    [Authorize]
     [HttpGet("obterTodas")]
     public async Task<ActionResult<List<TurmaDTO>>> ObterTodas()
     {
@@ -77,7 +76,7 @@ public class TurmaController : ControllerBase
             return BadRequest($"Erro ao obter turmas: {ex.Message}");
         }
     }
-
+    [Authorize(Roles = "CoordenadorCurso, Reitoria")]
     [HttpDelete("deletar/{id}")]
     public async Task<IActionResult> Deletar(int id)
     {
